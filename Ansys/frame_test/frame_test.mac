@@ -1,0 +1,132 @@
+![mm]
+![N]
+
+FINISH
+/CLEAR, start
+/NERR,0,99999999,,0
+
+datnam = 'frame'
+
+/FILNAME, %datnam%
+/TITLE,   %datnam%
+
+
+
+/PREP7
+!Steel
+	ET,1,BEAM188
+	KEYOPT,1,4,2
+	KEYOPT,1,1,1
+	MPTEMP,,,,,,,,
+	MPTEMP,1,0        
+	MPDATA,EX,1,,210000                  
+	MPDATA,PRXY,1,,0.3    
+	MPDATA,DENS,1,,7.85e-9
+	MPDATA,ALPX,1,,12e-6
+
+! geometry
+n_point = 5
+*DIM,geom_point,ARRAY,n_point ,4
+
+
+*VREAD,geom_point(1,1),input_data\pnumber,txt,,
+(E30.0)
+*VREAD,geom_point(1,2),input_data\coordx,txt,,
+(F10.0)
+*VREAD,geom_point(1,3),input_data\coordy,txt,,
+(E10.0)
+*VREAD,geom_point(1,4),input_data\coordz,txt,,
+(F10.0)
+
+! load
+*DEL,F_X
+*DIM,F_X,ARRAY,1,1
+*VREAD,F_X,input_data\input_var_Fx,txt,,
+(F10.0)
+
+*DEL,F_Y
+*DIM,F_Y,ARRAY,1,1
+*VREAD,F_Y,input_data\input_var_Fy,txt,,
+(F10.0)
+
+
+!Szelvények összekötése
+*DO,i,1,n_point-1
+	SECTYPE,i,BEAM,HREC,tubular%i%,0
+	SECOFFSET,CENT
+	SECDATA,150,150,7,7,7,7
+*ENDDO
+
+!connectivity matrix
+n_elem = 4
+*DIM,connection_mx,ARRAY,n_elem,3
+*VREAD,connection_mx(1,1),input_data\start,txt,,
+(E30.0)
+*VREAD,connection_mx(1,2),input_data\end,txt,,
+(F10.0)
+*VREAD,connection_mx(1,3),input_data\section,txt,,
+(E10.0)
+
+!define keypoints
+*DO,i,1,n_point,1
+	K,geom_point(i,1),geom_point(i,2),geom_point(i,3),geom_point(i,4)
+*ENDDO
+
+!define lines and mesh them
+*DO,i,1,n_elem
+    L,connection_mx(i,1),connection_mx(i,2)
+    LATT,1,,1,,,,connection_mx(i,3)
+    LESIZE,ALL,400
+    LMESH,ALL
+*ENDDO
+
+
+NSEL,S,LOC,Y,0
+		D,ALL,UX,0
+		D,ALL,UY,0
+		D,ALL,UZ,0
+		D,ALL,ROTX,0
+		D,ALL,ROTY,0
+		D,ALL,ROTZ,0
+ALLSEL,ALL
+
+
+!Loading
+ACEL,0,9810,0
+! self-weight
+! concentrated force
+NSEL,S,LOC,X,5000 !!
+*GET,int_node,NODE,0,NUM,MAX
+
+F, int_node, FX, F_X(1,1),,,
+F, int_node, FY, -F_Y(1,1),,,
+
+ALLSEL,ALL
+
+EPLO
+ /PBC,ALL,,1	!shows the symbols (supports, forces)
+
+SAVE
+ALLSEL,ALL
+FINISH
+
+/SOLU
+ANTYPE,0
+SOLVE
+FINISH
+
+! save results for further processing
+/POST1
+ALLSEL,ALL
+*GET,displ_x,NODE,int_node,U,X
+*GET,displ_y,NODE,int_node,U,Y
+
+*CFOPEN,mid_displ_x,txt
+*VWRITE,displ_x
+(E20.10)
+
+*CFOPEN,mid_displ_y,txt
+*VWRITE,displ_y
+(E20.10)
+
+FINISH
