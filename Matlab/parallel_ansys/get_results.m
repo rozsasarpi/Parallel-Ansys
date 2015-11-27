@@ -17,7 +17,7 @@ for ii = 1:sum(batch_size)
     % loop over the input variables
     for jj = 1:length(result_name)
         R(ii).(result_name{jj}) = dlmread(fullfile(working_dir,...
-            [result_name{jj}, '_',num2str(ii),'.txt']));
+            ['results/', result_name{jj}, '_',num2str(ii),'.txt']));
     end
     
 end

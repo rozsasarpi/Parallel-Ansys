@@ -29,18 +29,29 @@ for ii = 1:n_parrun
         rmdir(job_dir,'s')
     end
     % initialize new jobs
-    
     mkdir(job_dir)
-    mkdir([job_dir, '\input_data'])
+    if ~isempty(input_var_dir)
+        mkdir(fullfile(job_dir, input_var_dir))
+    end
     
-    copyfile(fullfile(working_dir, input_file), job_dir)
-    copyfile(fullfile(working_dir, 'input_data'), [job_dir, '\input_data'])
+    % copy all *.inp and *.mac files to the temporary job folder
+    if ~isempty(dir([working_dir, '\*.inp']))
+        copyfile([working_dir, '\*.inp'], job_dir)
+    end
+    if ~isempty(dir([working_dir, '\*.mac']))
+        copyfile([working_dir, '\*.mac'], job_dir)
+    end
+    % copy the files from the input_var_dir to the temporary folder
+    dir_data = dir(fullfile(working_dir, input_var_dir));
+    dir_index = [dir_data.isdir];
+    file_list = {dir_data(~dir_index).name}';
+    cellfun(@(x) copyfile(fullfile(working_dir, input_var_dir, x), fullfile(job_dir, input_var_dir)), file_list)
     
     % write input
     % loop over the input variables
     for jj = 1:length(input_var_name)
         var = input_var_name{jj};        
-        dlmwrite(fullfile(job_dir, 'input_data', ['input_var_',var,'.txt']), input_var.(var)(run_num(ii)))
+        dlmwrite(fullfile(job_dir, input_var_dir, ['input_var_',var,'.txt']), input_var.(var)(run_num(ii)))
     end
     
     % run commands

@@ -34,6 +34,11 @@ if ~exist('input_var', 'var')
     error('Input variables /Model.input_var/ are not specified!')
 end
 
+if ~exist('input_var_dir', 'var')
+    input_var_dir = '';
+end
+
+
 if ~exist('result_file', 'var')
     error('Result file /Model.result_file/ is not specified!')
 end
@@ -65,9 +70,17 @@ if diff(cellfun(@(field) length(input_var.(field)), input_var_name)) ~= 0
     error('The dimension of the input parameters /Model.input_var.*/ mismatch, they should have equal number of elements!')
 end
 
+% delete previous results if any
+if exist([working_dir, '\results'], 'dir')
+    rmdir([working_dir, '\results'],'s')
+end
+% create results folder
+mkdir([working_dir, '\results'])
+
 % collect fields and update Model
 fields = {'working_dir'; 'input_file'; 'input_var'; 'input_var_name'; 'input_file_ext';
-    'result_file'; 'result_name'; 'output_file'; 'licence'; 'ansys_exe'; 'keep_last_batch'};
+    'input_var_dir'; 'result_file'; 'result_name'; 'output_file'; 'licence'; 'ansys_exe'; 
+    'keep_last_batch'};
 
 for ii = 1:length(fields)
     upModel.(fields{ii}) = eval(fields{ii});

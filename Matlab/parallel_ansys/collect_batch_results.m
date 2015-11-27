@@ -26,7 +26,7 @@ for ii = 1:n_parrun
     % loop over the input variables
     for jj = 1:length(input_var_name)
         job_result = fullfile(job_dir, result_file{jj});
-        copyfile(job_result, fullfile(working_dir, [result_name{jj},...
+        copyfile(job_result, fullfile([working_dir, '\results'], [result_name{jj},...
             '_',num2str(result_num(ii)),'.txt']))
     end
     

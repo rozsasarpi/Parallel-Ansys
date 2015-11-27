@@ -25,7 +25,7 @@
 %OPTIONAL INPUT
 % Model.
 %   .input_var_dir      directory of inputs in Ansys working directory 
-%                       /str; default = 'input_data'/
+%                       /str; default = .working_dir/
 %   .output_file        name of the Ansys input file /str; 
 %                       default = input_file (with *.out extension)/  
 %   .licence            cell with string elements indicating licences,
@@ -50,12 +50,10 @@
 %
 % Note:
 %  * place the ansys mac or inp file, .input_file, in the .working_dir
-%  * within the .working_dir create a folder named input_data (or specify 
-%    it with Model.input_var_dir) and put there the files containing the 
-%    inputs, Ansys should read from that folder the varied parameters as
-%    well (Model.input_var)
 %  * see the example for the recommended structuring of files, folders, and
 %    naming convention
+%  * ['input_var_', Model.input_var] automatic naming is created by the
+%    Matlab function, this should be in line with the Ansys APDL code
 %  * parfor with default settings is used for parallel computing, thus it
 %    can happen that lower number of jobs are running parallel than licence
 %    available, configure parfor in run_ansys.m
@@ -85,15 +83,20 @@
 % * assignin vs global variables?
 % * option to keep all analysis files
 % * initialize R structure in get_results.m
+% * input_var_dir should be the working_dir by default, results should be
+%   collected to a results folder + copy all files from working_dir to tmp
+%   job dirs except of the results folder (possible remainer from prev
+%   analysis)
 
 %..........................................................................
 % TEST INPUT
-% Model.working_dir = 'd:\Working folder\ANSYS working folder\frame_test';
-% Model.input_file  = 'frame_test.mac';
-% Model.input_var.Fx= [1e4,2e4];
-% Model.input_var.Fy= [1e4,1e4];
-% Model.ansys_exe   = 'C:\Program Files\ANSYS Inc\v162\ANSYS\bin\winx64\ansys162.exe';
-% Model.result_file = {'mid_displ_x.txt'; 'mid_displ_y.txt'};
+% Model.working_dir     = 'd:\Working folder\ANSYS working folder\frame_test';
+% Model.input_file      = 'frame_test.mac';
+% Model.input_var_dir   = 'input_data';
+% Model.input_var.Fx    = [1e4,2e4];
+% Model.input_var.Fy    = [1e4,1e4];
+% Model.ansys_exe       = 'C:\Program Files\ANSYS Inc\v162\ANSYS\bin\winx64\ansys162.exe';
+% Model.result_file     = {'mid_displ_x.txt'; 'mid_displ_y.txt'};
 % tailor the input to your settings
 %..........................................................................
 
