@@ -1,15 +1,18 @@
-# Parallel Ansys
+Parallel Ansys
+==============
 
 Run [Ansys](http://www.ansys.com/) in parallel batch mode from [Matlab](http://www.mathworks.com/products/matlab/)
 
 __Codes:__ Ansys APDL, Matlab
 
-__See:__
+See
+-----
 * example: parallel_ansys_test.m and /Ansys/frame_test
 * Matlab/parallel_ansys/parallel_ansys.m help file/preamble
 
 
-__Working of the code:__
+Working of the code
+-------------------
   1. form blocks with 'n' number of jobs (to be run parallel), start with
      the first block
   2. create temporary folders in the main Ansys working folder for parallel jobs: /job1_tmp,
@@ -20,7 +23,14 @@ __Working of the code:__
   5. Delete the temporary job folders
   6. Go to step 1. and move to the next block if any
   
-__Other Ansys related repos:__
+Acknowledgements
+----------------
+
+The scripts in this repo have been developed at [Department of Structural Engineering](http://www.epito.bme.hu/hidak-es-szerkezetek-tanszek), Budapest University of Technology and Economics.
+
+  
+My other Ansys related repos
+----------------------------
 * [run Ansys in parallel batch mode using Matlab](https://github.com/rozsasarpi/Parallel-Ansys)
 * [dynamic load analysis for bridges](https://github.com/rozsasarpi/DLA-Ansys)
 * [construction stage analysis](https://github.com/rozsasarpi/CSA-Ansys)
